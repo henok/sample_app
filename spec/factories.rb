@@ -13,3 +13,9 @@ end
 Factory.sequence :name do |n|
   "mr-#{n}-person"
 end
+
+Factory.define :micropost do |micropost|
+  micropost.content "Foo bar"
+  micropost.association :user
+end
+

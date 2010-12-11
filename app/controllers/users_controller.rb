@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_filter :authenticate, :only => [:index, :edit, :update]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
-#  before_filter :new_user,   :only => [:new, :create]
+  before_filter :new_user,   :only => [:new, :create]
 
   def index
     @title = "All users"
@@ -46,9 +46,16 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
-    redirect_to users_path
+    user = User.find(params[:id])
+    if(user == current_user)
+      flash[:notice] = "cannot delete yourself"
+      redirect_to users_path
+    else
+      user.destroy
+      flash[:success] = "User destroyed."
+      redirect_to users_path
+    end
+    
   end
 
 
@@ -69,7 +76,7 @@ class UsersController < ApplicationController
     end
 
     def new_user
-      return redirect_to(root_path) unless (!current_user.nil?)
+      return redirect_to(root_path) unless (current_user.nil?)
     end
 
 
