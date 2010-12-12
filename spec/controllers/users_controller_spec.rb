@@ -16,7 +16,8 @@ describe UsersController do
     describe "for signed-in users" do
 
       before(:each) do
-        @user = test_sign_in(Factory(:user))
+        @user = Factory(:user, {:email => Factory.next(:email)+".ca", :name => Factory.next(:name)+".ca"}) 
+        test_sign_in(@user)
         second = Factory(:user, {:email => "another@example.com", :name => "another-user"})
         third  = Factory(:user, {:email => "another@example.net", :name => "nother-user-again"})
 
@@ -58,7 +59,7 @@ describe UsersController do
   describe "GET 'show'" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
     end
 
     it "should be successful" do
@@ -166,7 +167,7 @@ describe UsersController do
   describe "GET 'edit'" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
       test_sign_in(@user)
     end
 
@@ -191,7 +192,7 @@ describe UsersController do
   describe "PUT 'update'" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
       test_sign_in(@user)
     end
 
@@ -242,7 +243,7 @@ describe UsersController do
   describe "authentication of edit/update pages" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
     end
 
     describe "for non-signed-in users" do
@@ -280,7 +281,7 @@ describe UsersController do
   describe "DELETE 'destroy'" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
     end
 
     describe "as a non-signed-in user" do

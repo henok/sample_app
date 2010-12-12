@@ -1,7 +1,9 @@
 <%= form_for @micropost do |f| %>
   <%= render 'shared/error_messages', :object => f.object %>
   <div class="field">
-    <%= f.text_area :content %>
+    <%= f.text_area :content, 
+      :onkeyup => "document.getElementById('char_counter').innerHTML = (140-document.getElementById('micropost_content').value.length); if(document.getElementById('char_counter').innerHTML < 0){document.getElementById('charslefttxt').style.color='red'} else if(document.getElementById('char_counter').innerHTML < 10){ document.getElementById('charslefttxt').style.color='orange'} else {document.getElementById('charslefttxt').style.color='black'}" %> <br/>
+    <span id="charslefttxt"><span id="char_counter">140</span> characters left</span>
   </div>
   <div class="actions">
     <%= f.submit "Submit" %>

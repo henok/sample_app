@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Microposts" do
 
   before(:each) do
-    user = Factory(:user)
+    user = Factory(:user, {:email => Factory.next(:email), :name => Factory.next(:name)})
     visit signin_path
     fill_in :email,    :with => user.email
     fill_in :password, :with => user.password

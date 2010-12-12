@@ -51,7 +51,7 @@ describe "LayoutLinks" do
   describe "when signed in" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user, {:email => Factory.next(:email)+".ext", :name => Factory.next(:name)+".ext"})
       visit signin_path
       fill_in :email,    :with => @user.email
       fill_in :password, :with => @user.password

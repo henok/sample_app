@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Micropost do
 
   before(:each) do
-    @user = Factory(:user)
+    @user = Factory(:user, {:email => Factory.next(:email), :name => Factory.next(:name)})
     @attr = { :content => "value for content" }
   end
 
