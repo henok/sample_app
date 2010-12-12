@@ -27,49 +27,6 @@ describe Micropost do
     end
   end
   
-  describe "micropost associations" do
-
-    before(:each) do
-      #@user = User.create(@attr)
-      @mp1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
-      @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
-    end
-
-    it "should have a microposts attribute" do
-      @user.should respond_to(:microposts)
-    end
-    
-    it "should have the right microposts in the right order" do
-      @user.microposts.should == [@mp2, @mp1]
-    end
-    
-    it "should destroy associated microposts" do
-      @user.destroy
-      [@mp1, @mp2].each do |micropost|
-        Micropost.find_by_id(micropost.id).should be_nil
-      end
-    end
-    
-    describe "status feed" do
-
-      it "should have a feed" do
-        @user.should respond_to(:feed)
-      end
-
-      it "should include the user's microposts" do
-        @user.feed.include?(@mp1).should be_true
-        @user.feed.include?(@mp2).should be_true
-      end
-
-      it "should not include a different user's microposts" do
-        mp3 = Factory(:micropost,
-                      :user => Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name)))
-        @user.feed.include?(mp3).should be_false
-      end
-    end
-
-  end
-  
   describe "validations" do
 
     it "should require a user id" do
@@ -84,6 +41,37 @@ describe Micropost do
       @user.microposts.build(:content => "a" * 141).should_not be_valid
     end
   end
+
+  describe "from_users_followed_by" do
+
+    before(:each) do
+      @other_user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
+      @third_user = Factory(:user, :email => Factory.next(:email), :name => Factory.next(:name))
+
+      @user_post  = @user.microposts.create!(:content => "foo")
+      @other_post = @other_user.microposts.create!(:content => "bar")
+      @third_post = @third_user.microposts.create!(:content => "baz")
+
+      @user.follow!(@other_user)
+    end
+
+    it "should have a from_users_followed_by class method" do
+      Micropost.should respond_to(:from_users_followed_by)
+    end
+
+    it "should include the followed user's microposts" do
+      Micropost.from_users_followed_by(@user).should include(@other_post)
+    end
+
+    it "should include the user's own microposts" do
+      Micropost.from_users_followed_by(@user).should include(@user_post)
+    end
+
+    it "should not include an unfollowed user's microposts" do
+      Micropost.from_users_followed_by(@user).should_not include(@third_post)
+    end
+  end
+
 
 
 end
